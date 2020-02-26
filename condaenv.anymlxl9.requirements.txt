@@ -1,0 +1,14 @@
+gym==0.15.4
+pyglet==1.4.10
+opencv-python==4.1.2.30
+scikit-image==0.16.2
+dataclasses==0.6
+pygeometry==1.5.6
+cloudpickle==1.2.2
+duckietown_slimremote==2018.10.1
+torch==1.4.0
+torchvision
+jupyter
+numpy==1.18.0
+tensorflow==2.1
+git+http://github.com/brandontrabucco/diffopt.git

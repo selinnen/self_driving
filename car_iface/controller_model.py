@@ -39,12 +39,11 @@ class Car_Interface():
         All except for the brake_weight should be positive.
         '''
         #Coefficients corresponding to the motion dynamics
-        self.rolling_bias = None
-        self.friction_constant = None
+        self.rolling_bias = 0.003859064472180037
+        self.friction_constant = 0.014415845154209468
 
-        self.accelerator_weight = None
-        self.brake_weight = None
-        raise Exception("You forgot to input SystemID learned weights in the Controller Model")
+        self.accelerator_weight = 0.011734460452251988
+        self.brake_weight = 0.00692354207614408
 
         '''
         If approximating the complex internal model we use a FCN
@@ -114,8 +113,13 @@ class Car_Interface():
             self.accel should be set to the sum of these components.
             '''
 
-            #CODE HERE (Delete exception too)
-            raise Exception("You forgot to fill Simple Acceleration Calcs in the Controller Model")
+            if(pedal == None):
+                self.accel = - self.friction_constant * abs(self.velocity) + self.rolling_bias
+            elif(pedal == self.ACCELERATOR):
+                self.accel = self.accelerator_weight * amount + self.brake_weight * 0 + (- self.friction_constant) * abs(self.velocity) + self.rolling_bias
+            else:
+                self.accel = self.accelerator_weight * 0 + self.brake_weight * amount + (- self.friction_constant) * abs(self.velocity) + self.rolling_bias
+                
 
         elif (self.model == "complex"):
             '''
@@ -169,13 +173,10 @@ class Car_Interface():
         HINT: position update should have a linear term in velocity, and a quadratic
               term in acceleration.
         '''
-        '''
-        UNCOMMENT AND FILL IN (Delete exception too)
 
-        self.position +=
-        self.velocity +=
-        '''
-        raise Exception("You forgot to fill in pos/vel dynamics in the Controller Model")
+        self.position += (1/2)* self.accel * (self.dt) * (self.dt) + (self.velocity) * (self.dt) + self.position
+        self.velocity += self.accel * self.dt + self.velocity
+        
 
         #These ensure that the velocity is never against the current gear setting.
         if (self.gear == self.FORWARD):

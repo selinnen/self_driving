@@ -38,12 +38,12 @@ class Car_Interface():
         FILL IN ESTIMATED COEFFICIENTS BELOW (Delete exception too)
         All except for the brake_weight should be positive.
         '''
-        #Coefficients corresponding to the motion dynamics
-        self.rolling_bias = 0.003859064472180037
-        self.friction_constant = 0.014415845154209468
+        #Coefficients corresponding to the motion dynamic
+        self.rolling_bias = 0.01116941296027249
+        self.friction_constant = 0.11350499900580063
 
-        self.accelerator_weight = 0.011734460452251988
-        self.brake_weight = 0.00692354207614408
+        self.accelerator_weight = 0.10030140110727845
+        self.brake_weight = -0.25078353624777045
 
         '''
         If approximating the complex internal model we use a FCN
@@ -94,7 +94,7 @@ class Car_Interface():
             '''
             PART OF WEEK 2 HW
                                  Part A                     Part B
-            accel = [c_1 * accel_amt + c_2* brake_amt] + [c_3 * v + c_4]
+            accel = [c_1 * accel_amt + c_2 * brake_amt] + [c_3 * v + c_4]
 
             c_1: accelerator_weight
             c_2: brake_weight
@@ -113,13 +113,13 @@ class Car_Interface():
             self.accel should be set to the sum of these components.
             '''
 
-            if(pedal == None):
+            if(pedal is None):
                 self.accel = - self.friction_constant * abs(self.velocity) + self.rolling_bias
             elif(pedal == self.ACCELERATOR):
-                self.accel = self.accelerator_weight * amount + self.brake_weight * 0 + (- self.friction_constant) * abs(self.velocity) + self.rolling_bias
+                self.accel = self.accelerator_weight * amount - self.friction_constant * abs(self.velocity) + self.rolling_bias
             else:
-                self.accel = self.accelerator_weight * 0 + self.brake_weight * amount + (- self.friction_constant) * abs(self.velocity) + self.rolling_bias
-                
+                self.accel = self.brake_weight * amount - self.friction_constant * abs(self.velocity) + self.rolling_bias
+            print(self.accel, end = "\r")
 
         elif (self.model == "complex"):
             '''
@@ -143,7 +143,7 @@ class Car_Interface():
             model_inp = [0, 0, 0]
 
             #CODE HERE (Delete exception too)
-            raise Exception("You forgot to fill Complex Input Formulation in the Controller Model")
+           
 
             self.accel = self.complex_accel_fcn.predict([model_inp])
 
@@ -174,8 +174,8 @@ class Car_Interface():
               term in acceleration.
         '''
 
-        self.position += (1/2)* self.accel * (self.dt) * (self.dt) + (self.velocity) * (self.dt) + self.position
-        self.velocity += self.accel * self.dt + self.velocity
+        self.position += (1/2)* self.accel * (self.dt) * (self.dt) + (self.velocity) * (self.dt)
+        self.velocity += self.accel * self.dt
         
 
         #These ensure that the velocity is never against the current gear setting.

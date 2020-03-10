@@ -141,7 +141,11 @@ class Car_Interface():
             '''
             model_inp = [0, 0, 0]
 
-            #CODE HERE (Delete exception too)
+            model_inp[2] = self.velocity
+            if(pedal == self.ACCELERATOR):
+                model[0] = amount
+            elif(pedal == self.BRAKE):
+                model[1] = amount
            
 
             self.accel = self.complex_accel_fcn.predict([model_inp])

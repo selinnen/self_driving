@@ -89,13 +89,13 @@ class Braking_Distance_Estimator():
 
     def simple_analytical_approx(self, inp, tol = 1e-5, min_amt = 0, max_amt = 1):
         mid_amt = (min_amt + max_amt) /2
-        if (abs(max - min) < 2 * tol):
+        if (abs(max_amt - min_amt) < 2 * tol):
             return mid_amt
-        stopDis = simple_analytical_sd(inp[0], mid_amt)
+        stopDis = self.simple_analytical_sd(inp[0], mid_amt)
         if(stopDis < inp[1]):
-            return simple_analytical_approx(inp, tol, min_amt, mid_amt)
+            return self.simple_analytical_approx(inp, tol, min_amt, mid_amt)
         else:
-            return simple_analytical_approx(inp, tol, mid_amt, max_amt)
+            return self.simple_analytical_approx(inp, tol, mid_amt, max_amt)
 
     #File path to Braking Distance folder
     def bd_fp(self):

@@ -77,25 +77,22 @@ class Braking_Distance_Estimator():
     roughly the desired stopping distance given an initial velocity.
     '''
     def simple_analytical_sd(self, initial_velocity, amt):
-        c_1 = ci.accelerator_weight
-        c_2 = ci.brake_weight
-        c_3 = -ci.friction_constant
-        c_4 = ci.rolling_bias
-        x = c_2 * P + c_4
-        f = c_3
-        d = (1 / f) * (initial_velocity + x / f * np.log(1 - f * initial_velocity / x))
+        c_2 = self.brake_weight
+        c_3 = self.friction_constant
+        c_4 = self.rolling_bias
+        x = c_2 * amt + c_4
+        f = -c_3
+        d = (1 / f) * (initial_velocity + (x / f) * np.log(1 - (f * initial_velocity) / x))
+        if(d == float('inf')):
+            return float('inf')
         return d
 
     def simple_analytical_approx(self, inp, tol = 1e-5, min_amt = 0, max_amt = 1):
-        while(True):
-            mid_amt = (min_amt + max_amt) /2
-            if (abs(max - min) < 2 * tol):
-                estimate = mid_amt
-                break
-        stopDis = simple_analytical(inp[0], estimate)
-        if(abs(stopDis - inp[1]) < tol):
-            return estimate
-        elif(stopDis < inp[1]):
+        mid_amt = (min_amt + max_amt) /2
+        if (abs(max - min) < 2 * tol):
+            return mid_amt
+        stopDis = simple_analytical_sd(inp[0], mid_amt)
+        if(stopDis < inp[1]):
             return simple_analytical_approx(inp, tol, min_amt, mid_amt)
         else:
             return simple_analytical_approx(inp, tol, mid_amt, max_amt)
